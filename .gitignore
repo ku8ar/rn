@@ -1,0 +1,102 @@
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
+/*.zip
+**/.xcode.env.local
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Fastlane
+
+/fastlane/certs
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# Ruby / CocoaPods
+**/Pods/
+/vendor/bundle/
+
+
+# Bundle artifact
+*.jsbundle
+*.bundle
+!.bundle/config
+*.bundle.map
+*.bundle.meta
+third-party
+
+.env
+report.xml
+fastlane/.env.default
+/fastlane/api_key.json
+raport.xml
+__pycache__
+report.html
+codePush.json
+
+# Jest coverage
+coverage/
+
+# Font icons
+/src/assets/Icons.ttf
+/ios/Icons.ttf
+/android/app/src/main/assets/fonts/Icons.ttf
+/assets/fonts/Icons.ttf
+
+.vscode/
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.yarn
+.yarnrc.yml
+lefthook.yml
+
+
+ios/Pods
