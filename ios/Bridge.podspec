@@ -11,7 +11,17 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '13.0'
   s.swift_version = '5.0'
 
-  s.vendored_frameworks = 'output/Bridge.xcframework'
+  s.vendored_frameworks = [
+    'output/Bridge.xcframework',
+    'output/hermes.xcframework'
+  ]
+  s.preserve_paths = [
+    'output/Bridge.xcframework',
+    'output/hermes.xcframework'
+  ]
+  s.static_framework = true
+
+  s.libraries = 'c++'
 
   s.module_name = 'Bridge'
   s.requires_arc = true
