@@ -26,6 +26,8 @@ Pod::Spec.new do |s|
   s.module_name = 'Bridge'
   s.requires_arc = true
 
+  s.public_header_files = ['BridgeWrapperViewController.h']
+
   # s.resources = ['output/BridgeResources.bundle/**/*']
 
   s.pod_target_xcconfig = {

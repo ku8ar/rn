@@ -16,6 +16,7 @@ end
 
 config = use_native_modules!
 
+# RN bridge target
 target 'Bridge' do
   use_react_native!(
     :path => config[:reactNativePath],
