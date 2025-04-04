@@ -12,12 +12,11 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
 
   s.vendored_frameworks = 'output/Bridge.xcframework'
+
   s.module_name = 'Bridge'
   s.requires_arc = true
 
-  s.resource_bundles = {
-    'BridgeResources' => ['Bridge/main.jsbundle']
-  }
+  # s.resources = ['output/BridgeResources.bundle/**/*']
 
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
