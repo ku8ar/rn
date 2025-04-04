@@ -29,3 +29,21 @@ Zawartość build-bridge.sh
 - Wyodrębnij struktury z bibliotek i utwórz XCFramework
 
 
+Konfiguracja hosta
+
+1. w podfile dodaj wygenerowanego poda
+
+pod 'Bridge', :path => '../rn-project/ios' # zamiast sciezki do poda mozesz umiescic link
+
+2. w klasie AppDelegate.swift dodaj:
+
+@objc var window: UIWindow?
+
+3. w docelowej klasie zaimportuj biblioteke
+
+import Bridge
+
+4. a nastepnie gdzies w kodzie wywolaj ViewController:
+
+let vc = RNBridgeViewController()
+...

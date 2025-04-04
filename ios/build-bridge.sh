@@ -67,10 +67,16 @@ function copy_hermes() {
   cp -R "$SRCROOT/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework" "$OUTPUT_DIR/hermes.xcframework"
 }
 
+function copy_resources() {
+  mkdir -p "$OUTPUT_DIR/BridgeResources.bundle"
+  cp Bridge/main.jsbundle "$OUTPUT_DIR/BridgeResources.bundle/"
+}
+
 init_directories
 bundle_js
 run_codegen
 build_bridge
 copy_hermes
+copy_resources
 
 echo "✅ Done! XCFramework is in $OUTPUT_DIR/Bridge.xcframework"
