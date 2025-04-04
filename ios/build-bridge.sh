@@ -15,8 +15,8 @@ rm -rf "$BUILD_DIR"
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
-# Generate main.jsbundle
-echo "📦 Generating JS bundle (main.jsbundle)..."
+# # Generate main.jsbundle
+# echo "📦 Generating JS bundle (main.jsbundle)..."
 node "$REACT_NATIVE_CLI" bundle \
   --platform ios \
   --dev false \
@@ -24,7 +24,12 @@ node "$REACT_NATIVE_CLI" bundle \
   --bundle-output ./Bridge/main.jsbundle \
   --assets-dest ./Bridge
 
-echo "📦 Building $SCHEME for device (iphoneos)..."
+# echo "🧬 Generating React Native codegen artifacts..."
+pushd .. > /dev/null  
+node ./node_modules/react-native/cli.js codegen
+popd > /dev/null
+
+# echo "📦 Building $SCHEME for device (iphoneos)..."
 xcodebuild archive \
   -workspace "$XCWORKSPACE" \
   -scheme "$SCHEME" \
@@ -35,7 +40,7 @@ xcodebuild archive \
   SKIP_INSTALL=NO \
   BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-echo "🧪 Building $SCHEME for simulator (iphonesimulator)..."
+echo "📦 Building $SCHEME for simulator (iphonesimulator)..."
 xcodebuild archive \
   -workspace "$XCWORKSPACE" \
   -scheme "$SCHEME" \
@@ -45,6 +50,10 @@ xcodebuild archive \
   -archivePath "$BUILD_DIR/ios_simulator.xcarchive" \
   SKIP_INSTALL=NO \
   BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+
+# Manually copy JS bundle to device framework
+cp Bridge/main.jsbundle "$BUILD_DIR/ios_devices.xcarchive/Products/Library/Frameworks/$FRAMEWORK_NAME"
+cp Bridge/main.jsbundle "$BUILD_DIR/ios_simulator.xcarchive/Products/Library/Frameworks/$FRAMEWORK_NAME"
 
 echo "🧱 Creating XCFramework..."
 xcodebuild -create-xcframework \

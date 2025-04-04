@@ -1,23 +1,16 @@
 import UIKit
-import React
+//import React
 
-public class RNBridgeViewController: UIViewController {
+@objc public class RNBridgeViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
-
-      guard let jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackExtension: nil) else {
-            print("Cannot load RN JS bundle.")
-            return
-        }
-
-        let rootView = RCTRootView(
-            bundleURL: jsCodeLocation,
-            moduleName: "rnbridge", // << -- here
-            initialProperties: nil,
-            launchOptions: nil
-        )
-      rootView.frame = view.bounds
-      rootView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-      view.addSubview(rootView)
+//
+//        guard let jsBundleURL = Bundle.main.url(forResource: "main", withExtension: "jsbundle") else {
+//            fatalError("Cannot find main.jsbundle")
+//        }
+//
+//        let rootView = RCTRootView(bundleURL: jsBundleURL, moduleName: "YourModuleName", initialProperties: nil, launchOptions: nil)
+//        rootView.frame = self.view.bounds
+//        self.view.addSubview(rootView)
     }
 }
