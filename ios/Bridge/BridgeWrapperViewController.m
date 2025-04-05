@@ -10,7 +10,7 @@ NSString *const BridgeForceSwiftExport = @"Force Swift Symbol Export";
 
   NSURL *jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"rnbridge" // dodaj do doc
+                                                      moduleName:@"rnbridge"
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.frame = self.view.bounds;

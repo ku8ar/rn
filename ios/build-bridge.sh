@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# Constants
 export SRCROOT=$(pwd)
 SCHEME="Bridge"
 CONFIGURATION="Release"
@@ -79,4 +78,4 @@ build_bridge
 copy_hermes
 copy_resources
 
-echo "✅ Done! XCFramework is in $OUTPUT_DIR/Bridge.xcframework"
+echo "✅ Done! XCFramework is in $OUTPUT_DIR/Bridge.xcframework ✅"
