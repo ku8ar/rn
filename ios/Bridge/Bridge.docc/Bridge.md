@@ -2,6 +2,22 @@
 
 This document outlines a clean and modular approach to integrating React Native (RN) code into a native iOS application. Instead of embedding RN directly within the iOS project, we build it as a standalone `XCFramework`. This decouples both codebases, simplifies dependency management, and speeds up native app compilation, all while preserving the flexibility and autonomy of the RN project.
 
+## Architecture Overview
+
+```ascii
+[ React Native Code ]
+        ↓
+[ Target: Bridge ]
+  ├── React Native Runtime
+  ├── Turbo Native Modules
+  ├── Hermes Engine
+  └── Resources
+        ↓
+[ XCFramework (Bridge.xcframework) ]
+        ↓
+[ iOS Host App ]
+```
+
 ## Overview
 
 ### ✅ Advantages
@@ -11,14 +27,12 @@ This document outlines a clean and modular approach to integrating React Native 
 - Encourages proper separation of responsibilities across teams and repositories.
 
 ### ⚠️ Drawbacks
-- Some RN libraries may require additional handling in the `build-bridge.sh` script.
-  - *Example:* Tracking libraries that compile native modules often require manual framework integration.
 
-- Not all RN libraries work flawlessly in a precompiled setup.
-  - *Example:* `react-native-reanimated` needs patching, although the workaround is straightforward.
-
-- Adding multiple RN-based frameworks to the same iOS host can dramatically increase the final app size.
-  - *Solution:* Extracting the Hermes binary (a major contributor to `.ipa` size) can help, but then all RN modules must share the same RN version.
+| Challenge | Description |
+|----------|-------------|
+| Library integration | Some RN libraries may require additional handling in the `build-bridge.sh` script.<br><br>🔹 *Example:* Tracking libraries that compile native modules often require manual framework integration. |
+| Compatibility issues | Not all RN libraries work flawlessly in a precompiled setup.<br><br>🔹 *Example:* `react-native-reanimated` needs patching, although the workaround is straightforward. |
+| Bundle size | Adding multiple RN-based frameworks to the same iOS host can dramatically increase the final app size.<br><br>🔹 *Solution:* Extracting the Hermes binary (a major contributor to `.ipa` size) can help, but then all RN modules must share the same RN version. |
 
 ---
 
@@ -44,7 +58,7 @@ This document outlines a clean and modular approach to integrating React Native 
 
 ### CocoaPods Setup in the React Native Project
 
-To properly link React Native dependencies into the `Bridge` framework, you need to update the `Podfile` in your RN project by adding a dedicated target section. Insert the following into your `ios/Podfile`:
+To properly link React Native dependencies into the `Bridge` framework, you need to modify the `Podfile` located in your React Native project's `ios/` directory. Add a dedicated target section like the one below:
 
 ```ruby
 target 'Bridge' do
