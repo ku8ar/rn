@@ -18,7 +18,7 @@ This document outlines a clean and modular approach to integrating React Native 
   - *Example:* `react-native-reanimated` needs patching, although the workaround is straightforward.
 
 - Adding multiple RN-based frameworks to the same iOS host can dramatically increase the final app size.
-  - *Example:* Extracting the Hermes binary (a major contributor to `.ipa` size) can help, but then all RN modules must share the same RN version.
+  - *Solution:* Extracting the Hermes binary (a major contributor to `.ipa` size) can help, but then all RN modules must share the same RN version.
 
 ---
 
