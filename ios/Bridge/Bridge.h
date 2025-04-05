@@ -1,10 +1,3 @@
-//
-//  Bridge.h
-//  Bridge
-//
-//  Created by work on 04/04/2025.
-//
-
 #import <Foundation/Foundation.h>
 
 //! Project version number for Bridge.
