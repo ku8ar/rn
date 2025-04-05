@@ -115,7 +115,7 @@ chmod +x build-bridge.sh
 1. In your host app's `Podfile`, add:
 
 ```ruby
-pod 'Bridge', :path => '../rn-project/ios' # Adjust the path if needed
+pod 'Bridge', :path => '../rn-project/ios' # Adjust the path
 ```
 
 2. Install the pod:
