@@ -1,5 +1,11 @@
 ## Project Goal
 
+> ⚠️ **Disclaimer**
+> 
+> This project serves as a **proof of concept** and may not be stable enough for production environments. 
+> Compatibility has only been verified with **React Native versions 0.75 to 0.78**.
+
+
 This document outlines a clean and modular approach to integrating React Native (RN) code into a native iOS application. Instead of embedding RN directly within the iOS project, we build it as a standalone `XCFramework`. This decouples both codebases, simplifies dependency management, and speeds up native app compilation, all while preserving the flexibility and autonomy of the RN project.
 
 ## Architecture Overview
@@ -13,7 +19,7 @@ This document outlines a clean and modular approach to integrating React Native 
   ├── Hermes Engine
   └── Resources
         ↓
-[ XCFramework (Bridge.xcframework) ]
+[ XCFramework ]
         ↓
 [ iOS Host App ]
 ```
