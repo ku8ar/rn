@@ -3,9 +3,9 @@ Pod::Spec.new do |s|
   s.version      = '1.0.0'
   s.summary      = 'Precompiled RN xcframework'
   s.description  = 'XCFramework with RCTRootView and main.jsbundle'
-  s.homepage     = 'https://hsbc.com'
+  s.homepage     = 'https://example.com'
   s.license      = { :type => 'Proprietary', :file => 'LICENSE' }
-  s.author       = { 'You' => 'noreply@hsbc.com' }
+  s.author       = { 'You' => 'noreply@example.com' }
   s.source       = { :path => '.' }
 
   s.platform     = :ios, '13.0'
