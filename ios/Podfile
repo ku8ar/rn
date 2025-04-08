@@ -31,9 +31,6 @@ target 'rnbridge' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
-  pod 'JWTDecode'
-  pod 'SwiftyRSA'
 end
 
 post_install do |installer|
@@ -46,15 +43,15 @@ post_install do |installer|
   )
 
   installer.pods_project.targets.each do |target|
+    # fix xcode version
     if target.name.end_with?('React-Core.common-React-Core_privacy')
       target.remove_from_project
     end
 
-    if target.name == 'Bridge'
-      target.build_phases.each do |phase|
-        if phase.respond_to?(:name) && phase.name == '[CP] Copy Pods Resources'
-          target.build_phases.delete(phase)
-        end
+    if ['callstack-repack'].include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['OTHER_SWIFT_FLAGS'] ||= ''
+        config.build_settings['OTHER_SWIFT_FLAGS'] += ' -Xfrontend -no-verify-emitted-module-interface'
       end
     end
   end
