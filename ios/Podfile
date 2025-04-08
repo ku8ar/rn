@@ -41,4 +41,11 @@ post_install do |installer|
     :mac_catalyst_enabled => false,
     # :ccache_enabled => true
   )
+
+  installer.pods_project.targets.each do |target|
+    if target.name.end_with?('_privacy')
+      target.remove_from_project
+      next
+    end
+  end
 end
