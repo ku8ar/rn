@@ -1,6 +1,5 @@
-# instuctio
+#!/bin/bash
 
-```
 set -euo pipefail
 
 export SRCROOT=$(pwd)
@@ -80,5 +79,3 @@ copy_hermes
 copy_resources
 
 echo "✅ Done! XCFramework is in $OUTPUT_DIR/Bridge.xcframework ✅"
-
-```
