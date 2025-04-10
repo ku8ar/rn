@@ -11,8 +11,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8C973C062DA095D9005C5F55 /* BridgeWrapperViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C973C052DA095D9005C5F55 /* BridgeWrapperViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C973C092DA09691005C5F55 /* BridgeWrapperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C973C082DA09691005C5F55 /* BridgeWrapperViewController.m */; };
+		8CD32B782DA7F95000603B47 /* BridgeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CD32B772DA7F95000603B47 /* BridgeViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CD32B7A2DA7F95900603B47 /* BridgeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD32B792DA7F95900603B47 /* BridgeViewController.m */; };
+		8CD32B7C2DA7F98500603B47 /* BridgeBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CD32B7B2DA7F98500603B47 /* BridgeBundle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CD32B7E2DA7F99600603B47 /* BridgeBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD32B7D2DA7F99600603B47 /* BridgeBundle.m */; };
 		92CA4CFB09F107BF57E24FED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		968717D42D9FECE9003CCFF7 /* Bridge.docc in Sources */ = {isa = PBXBuildFile; fileRef = 968717D22D9FECE9003CCFF7 /* Bridge.docc */; };
 		968717D52D9FECE9003CCFF7 /* Bridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 968717D12D9FECE9003CCFF7 /* Bridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,8 +35,10 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = rnbridge/AppDelegate.swift; sourceTree = "<group>"; };
 		788AF99B5A17A08F5A858240 /* Pods-Bridge.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bridge.release.xcconfig"; path = "Target Support Files/Pods-Bridge/Pods-Bridge.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rnbridge/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8C973C052DA095D9005C5F55 /* BridgeWrapperViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgeWrapperViewController.h; sourceTree = "<group>"; };
-		8C973C082DA09691005C5F55 /* BridgeWrapperViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BridgeWrapperViewController.m; sourceTree = "<group>"; };
+		8CD32B772DA7F95000603B47 /* BridgeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgeViewController.h; sourceTree = "<group>"; };
+		8CD32B792DA7F95900603B47 /* BridgeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BridgeViewController.m; sourceTree = "<group>"; };
+		8CD32B7B2DA7F98500603B47 /* BridgeBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgeBundle.h; sourceTree = "<group>"; };
+		8CD32B7D2DA7F99600603B47 /* BridgeBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BridgeBundle.m; sourceTree = "<group>"; };
 		968717C72D9FEC57003CCFF7 /* Bridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		968717D12D9FECE9003CCFF7 /* Bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridge.h; sourceTree = "<group>"; };
 		968717D22D9FECE9003CCFF7 /* Bridge.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Bridge.docc; sourceTree = "<group>"; };
@@ -121,8 +125,10 @@
 				968717D12D9FECE9003CCFF7 /* Bridge.h */,
 				968717D22D9FECE9003CCFF7 /* Bridge.docc */,
 				968717D62D9FEDB4003CCFF7 /* RNBridgeViewController.swift */,
-				8C973C052DA095D9005C5F55 /* BridgeWrapperViewController.h */,
-				8C973C082DA09691005C5F55 /* BridgeWrapperViewController.m */,
+				8CD32B772DA7F95000603B47 /* BridgeViewController.h */,
+				8CD32B792DA7F95900603B47 /* BridgeViewController.m */,
+				8CD32B7B2DA7F98500603B47 /* BridgeBundle.h */,
+				8CD32B7D2DA7F99600603B47 /* BridgeBundle.m */,
 			);
 			path = Bridge;
 			sourceTree = "<group>";
@@ -145,8 +151,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CD32B7C2DA7F98500603B47 /* BridgeBundle.h in Headers */,
+				8CD32B782DA7F95000603B47 /* BridgeViewController.h in Headers */,
 				968717D52D9FECE9003CCFF7 /* Bridge.h in Headers */,
-				8C973C062DA095D9005C5F55 /* BridgeWrapperViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,8 +366,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CD32B7E2DA7F99600603B47 /* BridgeBundle.m in Sources */,
+				8CD32B7A2DA7F95900603B47 /* BridgeViewController.m in Sources */,
 				968717D42D9FECE9003CCFF7 /* Bridge.docc in Sources */,
-				8C973C092DA09691005C5F55 /* BridgeWrapperViewController.m in Sources */,
 				968717D72D9FEDB4003CCFF7 /* RNBridgeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

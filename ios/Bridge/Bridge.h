@@ -9,4 +9,4 @@ FOUNDATION_EXPORT const unsigned char BridgeVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <Bridge/PublicHeader.h>
 
 
-#import "BridgeWrapperViewController.h"
+#import "BridgeViewController.h"

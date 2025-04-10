@@ -4,7 +4,7 @@ import UIKit
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let vc = BridgeWrapperViewController()
+        let vc = BridgeViewController()
         addChild(vc)
         vc.view.frame = view.bounds
         view.addSubview(vc.view)
