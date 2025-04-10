@@ -73,7 +73,7 @@ function copy_resources() {
 
 init_directories
 bundle_js
-run_codegen
+# run_codegen
 build_bridge
 copy_hermes
 copy_resources
