@@ -1,0 +1,54 @@
+apply plugin: "com.android.library"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+apply plugin: "maven-publish"
+
+react {
+    autolinkLibrariesWithApp()
+}
+
+def enableProguardInReleaseBuilds = false
+
+def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.rnbridge"
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    api "com.facebook.react:react-android"
+    api "com.facebook.react:hermes-android"
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = "com.rnbridge"
+            artifactId = "bridge"
+            version = "1.0.0"
+
+            afterEvaluate { from components.release }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
