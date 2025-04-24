@@ -43,3 +43,10 @@ bundle_js
 publish_native_modules
 publish_bridge
 echo "✅ Finished building and publishing all AARs to Maven Local."
+
+##### DEV
+cd ..
+cd ..
+cd android
+./gradlew clean
+./gradlew installDebug

@@ -30,8 +30,8 @@ android {
 }
 
 dependencies {
-    api "com.facebook.react:react-android"
-    api "com.facebook.react:hermes-android"
+    api "com.facebook.react:react-android:0.79.0"
+    api "com.facebook.react:hermes-android:0.79.0"
 }
 
 publishing {
