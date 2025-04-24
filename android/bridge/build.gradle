@@ -32,6 +32,10 @@ android {
 dependencies {
     api "com.facebook.react:react-android:0.79.0"
     api "com.facebook.react:hermes-android:0.79.0"
+
+    // start: MANUAL LINKING
+    api "com.onfido.reactnative.sdk:onfido-react-native-sdk:14.4.0"
+    // end: MANUAL LINKING
 }
 
 publishing {

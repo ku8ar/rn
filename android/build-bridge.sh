@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 SRCROOT=$(pwd)
 
@@ -26,9 +26,9 @@ publish_native_modules() {
     echo "Building and publishing: $PKGDIR"
     cd "$PKGDIR"
     if [ -f "./gradlew" ]; then
-      ./gradlew publishToMavenLocal --quiet || echo "❌ Publish failed in $PKGDIR"
+      ./gradlew assembleRelease publishToMavenLocal --info || echo "❌ Publish failed in $PKGDIR"
     else
-      "$SRCROOT/../gradlew" -p "$PKGDIR" publishToMavenLocal --quiet || echo "❌ Publish failed in $PKGDIR"
+      "$SRCROOT/../gradlew" -p "$PKGDIR" assembleRelease publishToMavenLocal --info || echo "❌ Publish failed in $PKGDIR"
     fi
     cd - > /dev/null
   done
@@ -46,7 +46,7 @@ dev() {
   ./gradlew installDebug
 }
 
-# bundle_js
-# publish_native_modules
+bundle_js
+publish_native_modules
 publish_bridge
 dev

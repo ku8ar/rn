@@ -12,6 +12,10 @@ import com.facebook.react.ReactRootView
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 
+// start: MANUAL LINKING
+import com.onfido.reactnative.sdk.OnfidoReactNativeSdkPackage
+// end: MANUAL LINKING
+
 class BridgeReactView(context: Context) : FrameLayout(context) {
 
     private var instanceManager: ReactInstanceManager? = null
@@ -29,6 +33,9 @@ class BridgeReactView(context: Context) : FrameLayout(context) {
                 .setBundleAssetName("index.android.bundle")
                 .setJSMainModulePath("index")
                 .addPackage(MainReactPackage())
+                // start: MANUAL LINKING
+                .addPackage(OnfidoReactNativeSdkPackage())
+                // end: MANUAL LINKING
                 .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
                 .build()
