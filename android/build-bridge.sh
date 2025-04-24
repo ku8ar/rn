@@ -39,14 +39,14 @@ publish_bridge() {
   ./gradlew :bridge:publishToMavenLocal --quiet || echo "❌ Publish failed in $SRCROOT"
 }
 
-bundle_js
-publish_native_modules
-publish_bridge
-echo "✅ Finished building and publishing all AARs to Maven Local."
+dev() {
+  cd ..
+  cd ..
+  cd android
+  ./gradlew installDebug
+}
 
-##### DEV
-cd ..
-cd ..
-cd android
-./gradlew clean
-./gradlew installDebug
+# bundle_js
+# publish_native_modules
+publish_bridge
+dev

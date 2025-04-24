@@ -10,22 +10,19 @@ import com.facebook.react.shell.MainReactPackage
 import com.facebook.react.common.LifecycleState
 import com.facebook.react.ReactRootView
 
-class BridgeReactView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null
-) : FrameLayout(context, attrs) {
+class BridgeReactView(context: Context) : FrameLayout(context) {
 
     private var instanceManager: ReactInstanceManager? = null
     private var reactRootView: ReactRootView? = null
 
-    fun initialize(jsBundleAssetName: String = "index.android.bundle", initialProps: Bundle? = null) {
+    init {
         if (instanceManager == null) {
             val application = context.applicationContext as Application
 
             instanceManager = ReactInstanceManager.builder()
                 .setApplication(application)
                 .setCurrentActivity(null)
-                .setBundleAssetName(jsBundleAssetName)
+                .setBundleAssetName("index.android.bundle")
                 .setJSMainModulePath("index")
                 .addPackage(MainReactPackage())
                 .setUseDeveloperSupport(false)
@@ -37,7 +34,7 @@ class BridgeReactView @JvmOverloads constructor(
             reactRootView?.startReactApplication(
                 instanceManager,
                 "rnbridge",
-                initialProps
+                null
             )
             addView(reactRootView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         }
