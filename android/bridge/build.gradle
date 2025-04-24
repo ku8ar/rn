@@ -7,16 +7,12 @@ react {
     autolinkLibrariesWithApp()
 }
 
-def enableProguardInReleaseBuilds = false
-
-def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
-
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.rnbridge"
+    namespace "com.bridge"
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -41,7 +37,7 @@ dependencies {
 publishing {
     publications {
         release(MavenPublication) {
-            groupId = "com.rnbridge"
+            groupId = "com.bridge"
             artifactId = "bridge"
             version = "1.0.0"
 
@@ -50,5 +46,11 @@ publishing {
     }
     repositories {
         mavenLocal()
+    }
+}
+
+afterEvaluate {
+    tasks.named("releaseSourcesJar") {
+        dependsOn("generateCodegenArtifactsFromSchema")
     }
 }
