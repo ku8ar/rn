@@ -1,0 +1,390 @@
+diff --git a/node_modules/@onfido/react-native-sdk/android/publish.gradle b/node_modules/@onfido/react-native-sdk/android/publish.gradle
+index 33fb0ca..99e6036 100644
+--- a/node_modules/@onfido/react-native-sdk/android/publish.gradle
++++ b/node_modules/@onfido/react-native-sdk/android/publish.gradle
+@@ -10,7 +10,7 @@ afterEvaluate {
+         def packageJson = new JsonSlurper().parseText(file('../package.json').text)
+ 
+         publications {
+-            mavenJava(MavenPublication) {
++            release(MavenPublication) {
+                 // The new gradle publish plugin doesn't allow the @onfido/ prefix
+                 artifactId = packageJson.name.replace("@onfido/", "onfido-")
+                 groupId = 'com.onfido.reactnative.sdk'
+@@ -18,6 +18,10 @@ afterEvaluate {
+ 
+                 from components.findByName('release')
+ 
++                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
++                    builtBy tasks.named("bundleReleaseAar")
++                }
++
+                 artifact sourceJar
+ 
+                 pom {
+@@ -39,8 +43,32 @@ afterEvaluate {
+                             name = packageJson.author.name
+                         }
+                     }
++                    withXml {
++                        def dependenciesNode = asNode().appendNode('dependencies')
++                        configurations.api.allDependencies.each { dep ->
++                            if (dep.group && dep.name && dep.version) {
++                                def dependencyNode = dependenciesNode.appendNode('dependency')
++                                dependencyNode.appendNode('groupId', dep.group)
++                                dependencyNode.appendNode('artifactId', dep.name)
++                                dependencyNode.appendNode('version', dep.version)
++                                dependencyNode.appendNode('scope', 'compile')
++                            }
++                        }
++                        configurations.implementation.allDependencies.each { dep ->
++                            if (dep.group && dep.name && dep.version) {
++                                def dependencyNode = dependenciesNode.appendNode('dependency')
++                                dependencyNode.appendNode('groupId', dep.group)
++                                dependencyNode.appendNode('artifactId', dep.name)
++                                dependencyNode.appendNode('version', dep.version)
++                                dependencyNode.appendNode('scope', 'runtime')
++                            }
++                        }
++                    }
+                 }
+             }
+         }
++        repositories {
++            mavenLocal()
++        }
+     }
+ }
+diff --git a/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.m b/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.m
+index c7c8038..170503e 100644
+--- a/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.m
++++ b/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.m
+@@ -4,19 +4,62 @@
+ //  Copyright © 2016-2025 Onfido. All rights reserved.
+ //
+ 
+-#import <Foundation/Foundation.h>
+ #import <React/RCTBridgeModule.h>
+ #import <React/RCTEventEmitter.h>
+-@interface RCT_EXTERN_MODULE(OnfidoSdk, RCTEventEmitter)
+-
+-RCT_EXTERN_METHOD(
+-    start:(NSDictionary *)config
+-    resolver:(RCTPromiseResolveBlock)resolve
+-    rejecter:(RCTPromiseRejectBlock)reject
+-)
+-RCT_EXTERN_METHOD(supportedEvents)
+-RCT_EXTERN_METHOD(withMediaCallbacksEnabled)
+-RCT_EXTERN_METHOD(withBiometricTokenCallback)
+-RCT_EXTERN_METHOD(provideBiometricToken:(NSString *)biometricToken)
++#import "onfido_react_native_sdk-Swift.h"
++
++@interface OnfidoSdk : RCTEventEmitter <RCTBridgeModule>
++@end
++
++@implementation OnfidoSdk {
++  BOOL hasListeners;
++}
++
++RCT_EXPORT_MODULE()
++
+++ (BOOL)requiresMainQueueSetup {
++  return NO;
++}
++
++- (NSArray<NSString *> *)supportedEvents {
++  return @[@"onfidoMediaCallback", @"onTokenRequested", @"onTokenGenerated"];
++}
++
++- (void)startObserving {
++  hasListeners = YES;
++}
++
++- (void)stopObserving {
++  hasListeners = NO;
++}
++
++- (void)sendEvent:(NSString *)name body:(id)body {
++  if (hasListeners) {
++    [super sendEventWithName:name body:body];
++  }
++}
++
++RCT_EXPORT_METHOD(start:(NSDictionary *)config
++                  resolver:(RCTPromiseResolveBlock)resolve
++                  rejecter:(RCTPromiseRejectBlock)reject)
++{
++  [[OnfidoSdkBridge shared] startWith:config
++                              resolve:^(id result) { resolve(result); }
++                              reject:^(NSString *code, NSString *message, NSError *error) {
++                                reject(code, message, error);
++                              }];
++}
++
++RCT_EXPORT_METHOD(withMediaCallbacksEnabled) {
++  [[OnfidoSdkBridge shared] withMediaCallbacksEnabled];
++}
++
++RCT_EXPORT_METHOD(withBiometricTokenCallback) {
++  [[OnfidoSdkBridge shared] withBiometricTokenCallback];
++}
++
++RCT_EXPORT_METHOD(provideBiometricToken:(NSString *)biometricToken) {
++  [[OnfidoSdkBridge shared] provideBiometricToken:biometricToken];
++}
+ 
+ @end
+diff --git a/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.swift b/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.swift
+index a998ed5..6eddb10 100644
+--- a/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.swift
++++ b/node_modules/@onfido/react-native-sdk/ios/OnfidoSdk.swift
+@@ -4,168 +4,141 @@
+ //  Copyright © 2016-2025 Onfido. All rights reserved.
+ //
+ 
+-import Onfido
+ import Foundation
+-import React
+-
+-// Analytics to be re-added once payloads are harmonised across platforms
+-private enum CallbackType {
+-    case media
+-    case encryptedBiometricToken
+-}
++import Onfido
++import UIKit
+ 
+-@objc(OnfidoSdk)
+-final class OnfidoSdk: RCTEventEmitter {
++@objc(OnfidoSdkBridge)
++public final class OnfidoSdkBridge: NSObject {
++    @objc public static let shared = OnfidoSdkBridge()
+ 
+     private let onfidoFlowBuilder = OnfidoFlowBuilder()
+     private let configParser = OnfidoConfigParser()
++    private var callbackTypes: [CallbackType] = []
++
+     private lazy var encryptedBiometricTokenHandlerReceiver = EncryptedBiometricTokenHandlerReceiver(
+-        withTokenRequestedCallback: processEncryptedBiometricTokenRequestedResult(_:),
+-        andTokenGeneratedCallback: processEncryptedBiometricTokenGeneratedResult(_:)
++        withTokenRequestedCallback: { [weak self] result in
++            self?.sendEvent(name: "onTokenRequested", body: result)
++        },
++        andTokenGeneratedCallback: { [weak self] result in
++            self?.sendEvent(name: "onTokenGenerated", body: result)
++        }
+     )
+-    private var callbackTypes: [CallbackType] = []
+ 
+-    @objc
+-    func start(_ config: NSDictionary,
+-                     resolver resolve: @escaping RCTPromiseResolveBlock,
+-                     rejecter reject: @escaping RCTPromiseRejectBlock) {
+-        DispatchQueue.main.async { [weak self] in
+-            self?.run(withConfig: config, resolver: resolve, rejecter: reject)
++    private enum CallbackType {
++        case media
++        case encryptedBiometricToken
++    }
++
++    @objc public func start(with config: NSDictionary,
++                            resolve: @escaping (Any?) -> Void,
++                            reject: @escaping (String, String, NSError?) -> Void) {
++        DispatchQueue.main.async {
++            self.run(withConfig: config, resolve: resolve, reject: reject)
+         }
+     }
+ 
+     private func run(withConfig config: NSDictionary,
+-                     resolver resolve: @escaping RCTPromiseResolveBlock,
+-                     rejecter reject: @escaping RCTPromiseRejectBlock) {
++                     resolve: @escaping (Any?) -> Void,
++                     reject: @escaping (String, String, NSError?) -> Void) {
+         do {
+-            let onfidoConfig: OnfidoPluginConfig = try configParser.parse(config)
+-
++            let onfidoConfig = try configParser.parse(config)
+             let appearanceFilePath = Bundle.main.path(forResource: "colors", ofType: "json")
+             let appearance = try loadAppearanceFromFile(filePath: appearanceFilePath)
+ 
+-            if
+-                #available(iOS 12.0, *),
+-                let theme = onfidoConfig.theme
+-            {
++            if #available(iOS 12.0, *), let theme = onfidoConfig.theme {
+                 switch theme {
+-                case .dark:
+-                    appearance.setUserInterfaceStyle(.dark)
+-                case .light:
+-                    appearance.setUserInterfaceStyle(.light)
+-                case .automatic:
+-                    appearance.setUserInterfaceStyle(.unspecified)
++                case .dark: appearance.setUserInterfaceStyle(.dark)
++                case .light: appearance.setUserInterfaceStyle(.light)
++                case .automatic: appearance.setUserInterfaceStyle(.unspecified)
+                 }
+             }
+ 
+-            let mediaCallback: CallbackReceiver?
+-            if callbackTypes.contains(.media) {
+-                mediaCallback = CallbackReceiver(withCallback: processMediaResult(_:))
+-            } else {
+-                mediaCallback = nil
+-            }
++            let mediaCallback = callbackTypes.contains(.media)
++                ? CallbackReceiver(withCallback: { [weak self] result in
++                    self?.sendEvent(name: "onfidoMediaCallback", body: result)
++                })
++                : nil
+ 
+-            let encryptedBiometricTokenHandler = callbackTypes
+-                .contains(.encryptedBiometricToken) ? encryptedBiometricTokenHandlerReceiver : nil
++            let encryptedBiometricTokenHandler = callbackTypes.contains(.encryptedBiometricToken)
++                ? encryptedBiometricTokenHandlerReceiver
++                : nil
+ 
+-            let onfidoFlow: OnfidoFlow = try onfidoFlowBuilder.build(
++            let onfidoFlow = try onfidoFlowBuilder.build(
+                 with: onfidoConfig,
+                 appearance: appearance,
+                 customMediaCallback: mediaCallback,
+                 customEncryptedBiometricTokenHandler: encryptedBiometricTokenHandler
+             )
+ 
+-            onfidoFlow
+-                .with(responseHandler: { response in
+-                    switch response {
+-                    case let .error(error):
+-                        reject("\(error)", "Encountered an error running the flow", error)
+-                        return;
+-                    case let .success(results):
+-                        resolve(createResponse(results))
+-                        return;
+-                    case let .cancel(reason):
+-                        switch reason {
+-                        case .deniedConsent:
+-                            reject("deniedConsent", "User denied consent.", nil)
+-                        case .userExit:
+-                            reject("userExit", "User canceled flow.", nil)
+-                        default:
+-                            reject("userExit", "User canceled flow via unknown method.", nil)
+-                        }
+-                        return;
++            onfidoFlow.with(responseHandler: { response in
++                switch response {
++                case .success(let results):
++                    resolve(createResponse(results))
++                case .error(let error):
++                    reject("onfido_error", "Error during flow", error as NSError)
++                case .cancel(let reason):
++                    switch reason {
++                    case .deniedConsent:
++                        reject("deniedConsent", "User denied consent.", nil)
++                    case .userExit:
++                        reject("userExit", "User canceled flow.", nil)
+                     default:
+-                        reject("error", "Unknown error has occured", nil)
+-                        return
++                        reject("userExit", "User canceled flow via unknown method.", nil)
+                     }
+-                })
+-            guard
+-                let window = UIApplication.shared.windows.first,
+-                let topMostViewController = window.rootViewController?.findTopMostController()
+-            else {
+-                reject("error", "Unable to locate presenting view controller", nil)
++                @unknown default:
++                    reject("unknown", "Unknown error occurred", nil)
++                }
++            })
++
++            guard let window = UIApplication.shared.windows.first,
++                  let topVC = window.rootViewController?.findTopMostController() else {
++                reject("present_error", "Unable to locate presenting view controller", nil)
+                 return
+             }
+-            try onfidoFlow.run(from: topMostViewController, presentationStyle: .fullScreen, animated: true)
++
++            try onfidoFlow.run(from: topVC, presentationStyle: .fullScreen, animated: true)
++
+         } catch let error as NSError {
+-            reject("\(error)", error.domain, error)
+-            return
+-        } catch {
+-            reject("\(error)", "Error running Onfido SDK", error)
+-            return
++            reject("exception", error.localizedDescription, error)
+         }
+     }
+ 
+-    // MARK: - Callbacks
+-
+-    @objc
+-    public override func supportedEvents() -> [String] {
+-        return ["onfidoMediaCallback", "onTokenRequested", "onTokenGenerated"]
+-    }
++    // MARK: - Event forwarding
+ 
+-    @objc
+-    override static func requiresMainQueueSetup() -> Bool {
+-        return false
++    private func sendEvent(name: String, body: Any) {
++        NotificationCenter.default.post(name: Notification.Name(name), object: body)
++        // lub wywołaj delegata, jeśli robisz most ręczny
+     }
+ 
+-    // MARK: Media
++    // MARK: - Public API
+ 
+-    @objc
+-    func withMediaCallbacksEnabled() {
+-        callbackTypes.append(.media)
++    @objc public func supportedEvents() -> [String] {
++        return ["onfidoMediaCallback", "onTokenRequested", "onTokenGenerated"]
+     }
+ 
+-    private func processMediaResult(_ dictionary: [String: Any]) {
+-        sendEvent(withName: "onfidoMediaCallback", body: dictionary)
++    @objc public func withMediaCallbacksEnabled() {
++        callbackTypes.append(.media)
+     }
+ 
+-    // MARK: Encrypted biometric token
+-
+-    @objc
+-    func withBiometricTokenCallback() {
++    @objc public func withBiometricTokenCallback() {
+         callbackTypes.append(.encryptedBiometricToken)
+     }
+ 
+-    @objc
+-    func provideBiometricToken(_ biometricToken: String) {
++    @objc public func provideBiometricToken(_ biometricToken: String) {
+         encryptedBiometricTokenHandlerReceiver.provide(encryptedBiometricToken: biometricToken)
+     }
+-
+-    private func processEncryptedBiometricTokenRequestedResult(_ dictionary: [String: String]) {
+-        sendEvent(withName: "onTokenRequested", body: dictionary)
+-    }
+-
+-    private func processEncryptedBiometricTokenGeneratedResult(_ dictionary: [String: String]) {
+-        sendEvent(withName: "onTokenGenerated", body: dictionary)
+-    }
+ }
+ 
++// MARK: - Helpers
++
+ public extension UIViewController {
+     func findTopMostController() -> UIViewController? {
+-        var topController: UIViewController? = self
+-        while topController?.presentedViewController != nil {
+-            topController = topController?.presentedViewController
++        var top = self
++        while let presented = top.presentedViewController {
++            top = presented
+         }
+-        return topController
++        return top
+     }
+ }
+ 

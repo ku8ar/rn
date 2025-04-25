@@ -38,6 +38,7 @@ publish_native_modules() {
 
 publish_bridge() {
   echo "Building and publishing main bridge lib..."
+  ./gradlew clean
   ./gradlew :bridge:publishToMavenLocal
 }
 
