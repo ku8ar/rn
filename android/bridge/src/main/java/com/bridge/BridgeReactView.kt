@@ -15,6 +15,7 @@ import com.facebook.soloader.SoLoader
 // start: MANUAL LINKING
 import com.onfido.reactnative.sdk.OnfidoSdkPackage
 import com.callstack.repack.ScriptManagerPackage
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage
 // end: MANUAL LINKING
 
 class BridgeReactView(context: Context) : FrameLayout(context) {
@@ -37,6 +38,7 @@ class BridgeReactView(context: Context) : FrameLayout(context) {
                 // start: MANUAL LINKING
                 .addPackage(OnfidoSdkPackage())
                 .addPackage(ScriptManagerPackage())
+                .addPackage(SafeAreaContextPackage())
                 // end: MANUAL LINKING
                 .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
