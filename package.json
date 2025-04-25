@@ -11,6 +11,7 @@
     "build-android": "cd android && chmod +x build-bridge.sh && ./build-bridge.sh"
   },
   "dependencies": {
+    "@callstack/repack": "^5.0.6",
     "@onfido/react-native-sdk": "^14.4.0",
     "react": "19.0.0",
     "react-native": "0.79.0"

@@ -4,6 +4,7 @@ apply plugin: "com.facebook.react"
 apply plugin: "maven-publish"
 
 react {
+    // @FIXME standalone/framework dependency clash
     // autolinkLibrariesWithApp()
 }
 
@@ -47,6 +48,7 @@ dependencies {
 
     // start: MANUAL LINKING
     api "com.onfido.reactnative.sdk:onfido-react-native-sdk:14.4.0"
+    api "com.callstack.repack:callstack-repack:5.0.6"
     // end: MANUAL LINKING
 }
 

@@ -7,6 +7,7 @@ BUNDLE_NAME="index.android.bundle"
 BRIDGE_DIR="bridge"
 ASSETS_DIR="$SRCROOT/$BRIDGE_DIR/src/main/assets"
 RES_DIR="$SRCROOT/$BRIDGE_DIR/src/main/res"
+MAIN_GRADLEW="$SRCROOT/gradlew"
 
 bundle_js() {
   echo "Bundling JS..."
@@ -24,15 +25,17 @@ publish_native_modules() {
   find ../node_modules -type f -path "*/android/build.gradle" | while read -r gradlefile; do
     PKGDIR=$(dirname "$gradlefile")
     echo "Building and publishing: $PKGDIR"
-    cd "$PKGDIR"
-    if [ -f "./gradlew" ]; then
+    if [ -f "$PKGDIR/gradlew" ]; then
+      cd "$PKGDIR"
+
       ./gradlew assembleRelease
       ./gradlew publishToMavenLocal
+
+      cd - > /dev/null
     else
-      "$SRCROOT/../gradlew" -p "$PKGDIR" assembleRelease
-      "$SRCROOT/../gradlew" -p "$PKGDIR" publishToMavenLocal
+      "$MAIN_GRADLEW" -p "$PKGDIR" assembleRelease
+      "$MAIN_GRADLEW" -p "$PKGDIR" publishToMavenLocal
     fi
-    cd - > /dev/null
   done
 }
 

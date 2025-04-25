@@ -1,0 +1,78 @@
+diff --git a/node_modules/@callstack/repack/android/build.gradle b/node_modules/@callstack/repack/android/build.gradle
+index b968f5a..b5bd20b 100644
+--- a/node_modules/@callstack/repack/android/build.gradle
++++ b/node_modules/@callstack/repack/android/build.gradle
+@@ -1,5 +1,6 @@
+ import com.android.Version
+ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
++import groovy.json.JsonSlurper
+ 
+ buildscript {
+     // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+@@ -123,18 +124,12 @@ android {
+     }
+ 
+     compileOptions {
+-        if (REACT_NATIVE_MINOR_VERSION < 69) {
+-            sourceCompatibility JavaVersion.VERSION_1_8
+-            targetCompatibility JavaVersion.VERSION_1_8
+-        }
++        sourceCompatibility JavaVersion.VERSION_1_8
++        targetCompatibility JavaVersion.VERSION_1_8
+     }
+ 
+     kotlinOptions {
+-        if (REACT_NATIVE_MINOR_VERSION < 69) {
+-            jvmTarget = JavaVersion.VERSION_1_8
+-        } else if (REACT_NATIVE_MINOR_VERSION < 73) {
+-            jvmTarget = JavaVersion.VERSION_11
+-        }
++        jvmTarget = "1.8"
+     }
+ 
+     externalNativeBuild {
+@@ -192,8 +187,29 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
+ dependencies {
+     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+     //noinspection GradleDynamicVersion
+-    implementation 'com.facebook.react:react-android:+'
++    implementation 'com.facebook.react:react-android:0.78.2'
+     implementation "com.squareup.okhttp3:okhttp:4.9.2"
+     implementation "com.squareup.okhttp3:okhttp-urlconnection:4.9.2"
+     implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
+ }
++
++apply plugin: 'maven-publish'
++
++afterEvaluate {
++    def packageJson = new JsonSlurper().parseText(file('../package.json').text)
++
++    publishing {
++        publications {
++            release(MavenPublication) {
++                artifactId = packageJson.name.replace("@callstack/", "callstack-")
++                groupId = 'com.callstack.repack'
++                version = packageJson.version
++
++                from components.findByName('release')
++            }
++        }
++        repositories {
++            mavenLocal()
++        }
++    }
++}
+diff --git a/node_modules/@callstack/repack/android/gradle.properties b/node_modules/@callstack/repack/android/gradle.properties
+index c56fe0d..77bde27 100644
+--- a/node_modules/@callstack/repack/android/gradle.properties
++++ b/node_modules/@callstack/repack/android/gradle.properties
+@@ -1,4 +1,5 @@
+-RePack_kotlinVersion=1.7.0
+-RePack_compileSdkVersion=29
+-RePack_targetSdkVersion=29
++RePack_kotlinVersion=2.0.0
++RePack_compileSdkVersion=34
++RePack_targetSdkVersion=34
+ RePack_minSdkVersion=24
++android.useAndroidX=true
+\ No newline at end of file
