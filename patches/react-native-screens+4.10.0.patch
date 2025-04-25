@@ -1,0 +1,90 @@
+diff --git a/node_modules/react-native-screens/android/build.gradle b/node_modules/react-native-screens/android/build.gradle
+index 872d44e..2f786ba 100644
+--- a/node_modules/react-native-screens/android/build.gradle
++++ b/node_modules/react-native-screens/android/build.gradle
+@@ -5,8 +5,8 @@ buildscript {
+     ext {
+         rnsDefaultTargetSdkVersion = 34
+         rnsDefaultCompileSdkVersion = 34
+-        rnsDefaultMinSdkVersion = 21
+-        rnsDefaultKotlinVersion = '1.8.0'
++        rnsDefaultMinSdkVersion = 24
++        rnsDefaultKotlinVersion = '2.0.0'
+     }
+     ext.safeExtGet = {prop, fallback ->
+         def props = (prop instanceof String) ? [prop] : prop
+@@ -75,9 +75,9 @@ def resolveReactNativeDirectory() {
+ }
+ 
+ // spotless is only accessible within react-native-screens repo
+-if (isRunningInContextOfScreensRepo()) {
+-    apply from: 'spotless.gradle'
+-}
++// if (isRunningInContextOfScreensRepo()) {
++//     apply from: 'spotless.gradle'
++// }
+ 
+ if (isNewArchitectureEnabled()) {
+     apply plugin: "com.facebook.react"
+@@ -151,6 +151,9 @@ android {
+         sourceCompatibility JavaVersion.VERSION_1_8
+         targetCompatibility JavaVersion.VERSION_1_8
+     }
++    kotlinOptions {
++        jvmTarget = "1.8"
++    }
+     packagingOptions {
+         // For some reason gradle only complains about the duplicated version of libreact_render libraries
+         // while there are more libraries copied in intermediates folder of the lib build directory, we exclude
+@@ -223,7 +226,8 @@ repositories {
+ }
+ 
+ dependencies {
+-    implementation 'com.facebook.react:react-native:+'
++    implementation("com.facebook.react:react-android:+")
++    // implementation 'com.facebook.react:react-native:+'
+     implementation 'androidx.appcompat:appcompat:1.6.1'
+     implementation 'androidx.fragment:fragment-ktx:1.6.1'
+     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+@@ -237,3 +241,24 @@ dependencies {
+         }
+     }
+ }
++
++apply plugin: 'maven-publish'
++
++afterEvaluate {
++    def packageJson = new JsonSlurper().parseText(file('../package.json').text)
++
++    publishing {
++        publications {
++            release(MavenPublication) {
++                artifactId = packageJson.name
++                groupId = 'com.swmansion.rnscreens'
++                version = packageJson.version
++
++                from components.findByName('release')
++            }
++        }
++        repositories {
++            mavenLocal()
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/node_modules/react-native-screens/android/gradle.properties b/node_modules/react-native-screens/android/gradle.properties
+new file mode 100644
+index 0000000..2d8d1e4
+--- /dev/null
++++ b/node_modules/react-native-screens/android/gradle.properties
+@@ -0,0 +1 @@
++android.useAndroidX=true
+\ No newline at end of file
+diff --git a/node_modules/react-native-screens/android/settings.gradle b/node_modules/react-native-screens/android/settings.gradle
+new file mode 100644
+index 0000000..24bd184
+--- /dev/null
++++ b/node_modules/react-native-screens/android/settings.gradle
+@@ -0,0 +1 @@
++rootProject.name = 'react-native-screens'
+\ No newline at end of file

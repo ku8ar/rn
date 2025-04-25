@@ -50,6 +50,7 @@ dependencies {
     api "com.onfido.reactnative.sdk:onfido-react-native-sdk:14.4.0"
     api "com.callstack.repack:callstack-repack:5.0.6"
     api "com.th3rdwave.safeareacontext:react-native-safe-area-context:5.4.0"
+    api "com.swmansion.rnscreens:react-native-screens:4.10.0"
     // end: MANUAL LINKING
 }
 
