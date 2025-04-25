@@ -4,7 +4,7 @@ apply plugin: "com.facebook.react"
 apply plugin: "maven-publish"
 
 react {
-    autolinkLibrariesWithApp()
+    // autolinkLibrariesWithApp()
 }
 
 android {

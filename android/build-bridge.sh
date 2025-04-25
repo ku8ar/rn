@@ -26,9 +26,11 @@ publish_native_modules() {
     echo "Building and publishing: $PKGDIR"
     cd "$PKGDIR"
     if [ -f "./gradlew" ]; then
-      ./gradlew assembleRelease publishToMavenLocal --info || echo "❌ Publish failed in $PKGDIR"
+      ./gradlew assembleRelease
+      ./gradlew publishToMavenLocal
     else
-      "$SRCROOT/../gradlew" -p "$PKGDIR" assembleRelease publishToMavenLocal --info || echo "❌ Publish failed in $PKGDIR"
+      "$SRCROOT/../gradlew" -p "$PKGDIR" assembleRelease
+      "$SRCROOT/../gradlew" -p "$PKGDIR" publishToMavenLocal
     fi
     cd - > /dev/null
   done
@@ -36,7 +38,7 @@ publish_native_modules() {
 
 publish_bridge() {
   echo "Building and publishing main bridge lib..."
-  ./gradlew :bridge:publishToMavenLocal --quiet || echo "❌ Publish failed in $SRCROOT"
+  ./gradlew :bridge:publishToMavenLocal
 }
 
 dev() {
